@@ -179,7 +179,6 @@ function show_order()
 }
 
 //Import le fichier json
-import file from '../menu.json' assert {type: 'json'};
 import {Button} from './Button.js';
 import {Produit} from './Produit.js';
 
