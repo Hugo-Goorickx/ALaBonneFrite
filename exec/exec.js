@@ -190,21 +190,39 @@ let tmp_all_categories = [];
 let index_carrousel = 0;
 let index_button = 0;
 
-//Extraction des donnees du json
-for (let elem of file.menu)
-{
-    all_prod.push(new Produit(elem.name, elem.category, elem.price, elem.img));
-    
-    //Extraction des categories et stockages des Buttons (sous forme de classe)
-    for (let inside_elem of elem.category)
-    {
-        if (tmp_all_categories.includes(inside_elem) == false)
+const fetchName = () => fetch('./menu.json');
+
+fetchName()
+	.then((response) => response.json())
+	.then((json) => {
+	    for (let elem of json.menu)
         {
-            tmp_all_categories.push(inside_elem);
-            all_categories.push(new Button(inside_elem));
+            all_prod.push(new Produit(elem.name, elem.category, elem.price, elem.img));
+            
+            //Extraction des categories et stockages des Buttons (sous forme de classe)
+            for (let inside_elem of elem.category)
+            {
+                if (tmp_all_categories.includes(inside_elem) == false)
+                {
+                    tmp_all_categories.push(inside_elem);
+                    all_categories.push(new Button(inside_elem));
+                }
+            }
         }
-    }
-}
+        //Creation par defaut des buttons et images
+        all_categories[0].gen_button();
+        all_prod[0].gen_picture();   
+        
+        pos_button.addEventListener("click", show_cat);
+
+        show_cat();
+	})
+	.catch((error) => {
+		console.log("There was an error!", error);
+	});
+
+//Extraction des donnees du json
+
 
 //Buttons for carrousele picture
 let pos_buttons_car = document.getElementsByClassName('fl_gr');
@@ -216,9 +234,7 @@ let pos_buttons_cat = document.getElementsByClassName('fl_pt');
 pos_buttons_cat[0].addEventListener('click', function(){move_car_down(-1);});
 pos_buttons_cat[1].addEventListener('click', function(){move_car_down(1);});
 
-//Creation par defaut des buttons et images
-all_categories[0].gen_button();
-all_prod[0].gen_picture();    
+
 
 //Ajoute la fonction de l'affichage de la commande actuelle 
 let pos_prim_order = document.getElementById('button_order');
@@ -226,6 +242,4 @@ pos_prim_order.addEventListener("click", show_order);
 
 //Ajoute la fonction de l'affichage lors du clic
 let pos_button = document.getElementsByClassName('menu')[0];
-pos_button.addEventListener("click", show_cat);
 
-show_cat();
